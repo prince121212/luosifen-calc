@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>螺蛳粉单店投资回报测算 · 景德镇 100㎡</title>
+<style>
+  :root{
+    --ink:#1b2231;--ink2:#2c3648;--muted:#6b7485;--faint:#98a0ae;
+    --line:#e5e8ee;--bg:#f6f7f9;--card:#ffffff;
+    --red:#c2412f;--orange:#d4862a;--blue:#3b6fa0;--teal:#2c8579;--purple:#7b5ca6;--slate:#55627a;
+    --shadow:0 1px 2px rgba(20,30,50,.04),0 6px 18px rgba(20,30,50,.05);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:32px 26px 60px}
+  header{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:18px}
+  .h1{font-size:25px;font-weight:800;letter-spacing:.4px;margin:0}
+  .h1 small{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:0;margin-left:8px}
+  .sub{font-size:12.5px;color:var(--muted);margin-top:6px;max-width:700px}
+  .tag{font-size:11px;color:var(--muted);border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 11px}
+
+  /* 控制面板 */
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 22px 14px;box-shadow:var(--shadow);margin-bottom:18px}
+  .pt{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+  .pt h2{font-size:14px;font-weight:800;margin:0}
+  .pt .hint{font-size:11px;color:var(--faint)}
+  .ctrls{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:12px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:11.5px;color:var(--muted);margin-bottom:6px}
+  .ctrl output{font-size:13px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;-webkit-appearance:none;height:22px;background:transparent;margin:0}
+  input[type=range]::-webkit-slider-runnable-track{height:4px;background:#e8ebf0;border-radius:3px}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;margin-top:-5.5px;border-radius:50%;background:var(--ink);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .reset{margin-top:10px;font-size:11px;color:var(--muted);background:none;border:1px solid var(--line);border-radius:8px;padding:4px 10px;cursor:pointer}
+  .reset:hover{color:var(--ink);border-color:#cfd5de}
+
+  /* KPI */
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 15px;box-shadow:var(--shadow)}
+  .kpi .v{font-size:22px;font-weight:800;letter-spacing:-.3px;line-height:1.25;font-variant-numeric:tabular-nums}
+  .kpi .v em{font-style:normal;font-size:11.5px;font-weight:600;color:var(--muted);margin-left:3px}
+  .kpi .l{font-size:11px;color:var(--muted);margin-top:3px}
+  .kpi .d{font-size:10.5px;color:var(--faint);margin-top:1px}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;min-width:0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 22px 14px;box-shadow:var(--shadow);min-width:0}
+  .card.span2{grid-column:1 / -1}
+  .ct{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .ct h2{font-size:15px;font-weight:800;margin:0}
+  .ct .unit{font-size:11px;color:var(--faint);white-space:nowrap}
+  .cs{font-size:11.5px;color:var(--muted);margin:2px 0 12px}
+  .take{font-size:11.5px;color:var(--ink2);margin-top:10px;padding-top:9px;border-top:1px dashed var(--line)}
+  .take b{color:var(--red)}
+  svg{width:100%;height:auto;display:block}
+  .methodgrid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+
+  /* 表格 */
+  table{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+  th{font-size:11px;color:var(--muted);font-weight:600;text-align:right;padding:8px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+  th:first-child{text-align:left}
+  td{padding:9px 8px;text-align:right;border-bottom:1px solid #f1f3f6;white-space:nowrap}
+  td:first-child{text-align:left;font-weight:700}
+  td .sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:7px;vertical-align:middle}
+  .pos{color:var(--teal);font-weight:700}
+  .neg{color:var(--red);font-weight:700}
+  .mid{color:#b07a2a;font-weight:700}
+  .dim{color:var(--faint)}
+  table tr:last-child td{border-bottom:none}
+  td.num{cursor:help;border-bottom:1px dotted rgba(44,54,72,.25)}
+  #tip{position:fixed;z-index:99;left:0;top:0;max-width:392px;background:#1b2231;color:#eef1f6;
+    font-size:11.5px;line-height:1.62;padding:11px 13px;border-radius:10px;pointer-events:none;
+    box-shadow:0 10px 28px rgba(18,26,40,.28);opacity:0;transition:opacity .1s;white-space:pre-line;
+    font-variant-numeric:tabular-nums}
+  #tip.on{opacity:1}
+
+  .note{font-size:11px;color:var(--faint);margin-top:10px}
+  .list{font-size:12px;color:var(--ink2);margin:0;padding-left:18px}
+  .list li{margin-bottom:7px}
+  .list li b{color:var(--ink)}
+  footer{margin-top:26px;font-size:11px;color:var(--faint);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:14px}
+
+  @media (max-width:900px){
+    .ctrls{grid-template-columns:repeat(2,1fr)}
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .grid{grid-template-columns:1fr}
+    .methodgrid{grid-template-columns:1fr}
+  }
+
+  /* ---------- 手机 ---------- */
+  .monly{display:none}
+  .donly{display:inline}
+  .tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  @media (max-width:640px){
+    .wrap{padding:18px 14px 44px}
+    header{gap:10px;margin-bottom:14px;align-items:flex-start}
+    .h1{font-size:20px;letter-spacing:0}
+    .h1 small{display:block;margin:4px 0 0;font-size:11.5px}
+    .sub{font-size:12px;margin-top:6px}
+    .tag{font-size:10.5px;padding:3px 9px}
+    .panel{padding:14px 14px 10px;border-radius:13px}
+    .pt{flex-wrap:wrap;gap:4px}
+    .pt .hint{font-size:10.5px}
+    .ctrls{grid-template-columns:1fr;gap:10px;margin-top:10px}
+    .ctrl label{font-size:12px;margin-bottom:2px}
+    .ctrl output{font-size:14px}
+    input[type=range]{height:26px}
+    input[type=range]::-webkit-slider-thumb{width:18px;height:18px;margin-top:-7px}
+    .kpis{grid-template-columns:repeat(2,1fr);gap:9px}
+    .kpi{padding:11px 12px;border-radius:12px}
+    .kpi .v{font-size:19px}
+    .kpi .v em{font-size:10.5px}
+    .kpi .l{font-size:10.5px}
+    .kpi .d{font-size:10px}
+    .card{padding:14px 12px 12px;border-radius:13px}
+    .ct{flex-wrap:wrap;gap:2px}
+    .ct h2{font-size:14px}
+    .ct .unit{font-size:10px}
+    .cs{font-size:11px;margin-bottom:10px}
+    .take{font-size:11px}
+    .note{font-size:10.5px}
+    .list{font-size:11.5px;padding-left:16px}
+    /* 表格：首列吸附，后面列横向滑动 */
+    table{font-size:11px}
+    th{font-size:10px;padding:8px 7px}
+    td{padding:9px 7px}
+    th:first-child,td:first-child{position:sticky;left:0;z-index:2;background:#fff;box-shadow:8px 0 10px -8px rgba(28,38,56,.22);min-width:80px}
+    th:first-child{z-index:3}
+    .tblwrap{margin:0;padding:0 0 2px}
+    .monly{display:inline}
+    .donly{display:none}
+    /* 图表：横向滑动，保持字号可读 */
+    #cPay,#cMar,#cBe,#cInv,#cCost{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px;padding:0 4px}
+    #cMar svg,#cBe svg,#cInv svg,#cCost svg{width:100%}
+    footer{font-size:10px;margin-top:18px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <h1 class="h1">单店投资回报测算<small>景德镇 · 100㎡ · 50 座</small></h1>
+    <div class="sub">六个品牌＋一个杂牌对照，同一口径：同样的面积、同样的租金、同样的人工规则、同样的外卖占比与食材率。拖上面的滑块改假设，下面所有数字与图实时重算。</div>
+  </div>
+  <div class="tag">模型版本 M1 · 口径见页尾</div>
+</header>
+
+<div class="panel" style="padding:14px 22px;margin-bottom:14px;background:#fffdf8;border-color:#f0e6d2">
+  <div style="font-size:12.5px;line-height:1.75"><b>先说结论：</b>按 1.2 万租金、6,000 元/日，六个品牌回本 6.0—9.2 个月，<b>杂牌 3.7 个月</b>。杂牌的优势全在投入小（15.5 万，比品牌少 6—13 万），代价是没有品牌引流——即使营收只有品牌的八折，回本仍只要 5.4 个月；但若营收腰斩到 3,000 元/日，回本期约 17 个月。同一营收下“做得到”的概率也差很多：6,000 元/日 时肥姨妈约 <b>80%</b>、大铁牛 75%、小蛮螺 65%，杂牌只有 <b>25%</b>——品牌溢价就体现在这里。</div>
+</div>
+
+<div class="panel">
+  <div class="pt">
+    <h2>假设条件</h2>
+    <span class="hint">人工按你给的分档插值，日薪 150 元 × 30 天</span>
+  </div>
+  <div class="ctrls">
+    <div class="ctrl">
+      <label>日营收 <output id="oDaily">6,000 元</output></label>
+      <input type="range" id="sDaily" min="2000" max="16000" step="200" value="6000">
+    </div>
+    <div class="ctrl">
+      <label>月租金 <output id="oRent">12,000 元</output></label>
+      <input type="range" id="sRent" min="6000" max="24000" step="500" value="12000">
+    </div>
+    <div class="ctrl">
+      <label>日薪 / 人 <output id="oWage">150 元</output></label>
+      <input type="range" id="sWage" min="120" max="220" step="5" value="150">
+    </div>
+    <div class="ctrl">
+      <label>外卖占比 <output id="oDel">40%</output></label>
+      <input type="range" id="sDel" min="0" max="60" step="1" value="40">
+    </div>
+    <div class="ctrl">
+      <label>平台佣金（含活动） <output id="oCom">22%</output></label>
+      <input type="range" id="sCom" min="12" max="30" step="1" value="22">
+    </div>
+  </div>
+  <button class="reset" id="btnReset">恢复默认假设</button>
+</div>
+
+<div class="kpis" id="kpis"></div>
+
+<div class="grid">
+
+  <div class="card span2">
+    <div class="ct"><h2>七个选项一张表：当前假设下的账</h2><span class="unit">单位：元 / 月</span></div>
+    <div class="cs">总投入含押三付一（4 个月租金）、开办费 1.5 万、周转金 2 万；押金可退，不摊销。<b style="color:#2c3648;font-weight:600"><span class="donly">鼠标悬停任意数字可看算式。</span><span class="monly">点一下数字看算式，再点一次收起。</span></b><span class="monly"> 按住表格左右滑动可看全部列。</span></div>
+    <div id="warn"></div>
+    <div class="tblwrap"><table id="tbl"></table></div>
+    <div class="note">杂牌（白牌）口径：加盟费、保证金、管理费、营业额抽成全部为 0；设备 1 万、首批物料 1 万、收银系统 0.2 万自购；装修按 500 元/㎡（自装简装）；食材 36%（市场批发，无料包溢价）。<b style="color:#6b7485">月品牌费＝每月交给品牌方的钱（营业额抽成或固定管理费），已从月净利中扣除。</b><br><b style="color:#6b7485">品牌形象、产品力为 10 分制主观评分；可实现概率＝12%＋88%×logistic((目标日营收−能力上限)÷(0.2×能力上限))，能力上限＝2,000＋640×综合分（0.55×形象＋0.45×产品力）。</b></div>
+  </div>
+
+  <div class="card span2">
+    <div class="ct"><h2><span class="donly">回本期：三档日营收对比</span><span class="monly">回本期：当前日营收下</span></h2><span class="unit">纵轴：月（60+ 视为不回本）</span></div>
+    <div class="cs"><span class="donly">每组三根柱依次是 3,000 / 6,000 / 10,000 元/日，柱下数字为 6,000 元/日口径的回本期。</span><span class="monly">按当前假设一次算一个日营收，条越短回本越快；超过 60 个月记为不回本。</span></div>
+    <div id="cPay"></div>
+    <div class="take" id="tPay"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><h2>净利率 vs 日营收</h2><span class="unit">纵轴：净利润 / 营收</span></div>
+    <div class="cs">同一笔营收里，谁留下的更多。</div>
+    <div id="cMar"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><h2>盈亏平衡点</h2><span class="unit">日营收：元</span></div>
+    <div class="cs">低于这个数就亏钱；灰线是 3,000 元/日的参照。</div>
+    <div id="cBe"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><h2>钱花在哪：投入结构</h2><span class="unit">万元</span></div>
+    <div class="cs">100㎡ 口径重算，加盟费只占一小块。</div>
+    <div id="cInv"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><h2>营收去哪了：成本结构</h2><span class="unit">100% 堆叠</span></div>
+    <div class="cs">当前假设下，每一块钱营收的分配。</div>
+    <div id="cCost"></div>
+  </div>
+
+  <div class="card span2">
+    <div class="ct"><h2>评分与概率：规则、依据、边界</h2><span class="unit">主观评分模型，非统计预测</span></div>
+    <div class="cs">这三列不是从数据里“算”出来的，是按公开事实逐项打分后套一个概率曲线，用来把“能不能做到这个营收”摆到台面上。</div>
+    <div class="methodgrid" style="font-size:12px;color:var(--ink2)">
+      <div>
+        <div style="font-weight:800;font-size:12.5px;margin-bottom:6px">品牌形象 10 分｜5 项加权</div>
+        <div style="line-height:1.9">
+          ① 门店规模与城市覆盖 30%——红餐 2026.7 在营门店数为主，品牌自述只作上限参考<br>
+          ② 背书与资质 25%——商务部特许备案、非遗传承人、明星代言、资本入股<br>
+          ③ 市场验证 20%——是否进入红餐百店榜/抖音门店榜，榜单位次<br>
+          ④ 品牌历史与稳定性 15%——创立年份、主体变更、股权结构<br>
+          ⑤ 口碑与合规 10%——行政处罚、食品安全通报、黑猫投诉量
+        </div>
+        <div style="font-weight:800;font-size:12.5px;margin:12px 0 6px">产品力 10 分｜4 项加权</div>
+        <div style="line-height:1.9">
+          ① 菜单宽度与结构 30%——SKU 数、小吃/加料线、套餐组合<br>
+          ② 客单价与价格带 25%——红餐/抖音人均，正价与团购价差<br>
+          ③ 复购与记忆点 25%——招牌单品、免费续粉/加汤等动作<br>
+          ④ 出餐效率与供应链 20%——出餐时长、料包自产或外采、是否有全产业链
+        </div>
+      </div>
+      <div>
+        <div style="font-weight:800;font-size:12.5px;margin-bottom:6px">概率公式</div>
+        <div style="line-height:1.95">
+          综合分 S ＝ 0.55×品牌形象 ＋ 0.45×产品力<br>
+          能力上限 C ＝ 2,000 ＋ 640×S（元/日）<br>
+          概率 p ＝ 12% ＋ 88% ÷ (1 ＋ e<sup>(目标−C)/(0.2C)</sup>)
+        </div>
+        <div style="font-size:11.5px;color:var(--muted);margin-top:6px">
+          2,000 是“无品牌也能靠位置做到”的地板营收；640 是每一分评分折算的日营收增量；0.2C 控制曲线陡缓；12% 是尾部保底（极佳选址或超低价仍可能）。<b>这些常数是按“6,000 元/日 时肥姨妈约 80%、杂牌约 25%”这一锚点校准出来的，不是回归拟合结果</b>，改锚点就要改常数。
+        </div>
+        <div style="font-weight:800;font-size:12.5px;margin:12px 0 6px">数据来自哪里</div>
+        <div style="line-height:1.9;font-size:11.5px">
+          门店数/城市数/人均：红餐大数据 2026-07-16；抖音门店榜 2025.9 仅作交叉线索（口径不同，不混用）<br>
+          备案、主体、股权：商务部特许经营备案系统、企查查/天眼查<br>
+          代言、非遗、融资：品牌官网与媒体报道（黄子韬代言、微念入股柳螺香食品科技）<br>
+          投诉与处罚：黑猫投诉、市场监管公开通报
+        </div>
+        <div style="font-weight:800;font-size:12.5px;margin:12px 0 6px">这套数不能证明什么</div>
+        <div style="line-height:1.9;font-size:11.5px;color:var(--muted)">
+          没有景德镇本地样本，也没有任何单店营收数据，所以它是决策辅助，不是预测。真要验证，去目标铺位蹲三天：数午晚市进店人数、看同商圈同类店的美团月售、问周边商户租金与客流。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card span2">
+    <div class="ct"><h2>还没定的关键变量</h2><span class="unit">会显著改变结论</span></div>
+    <div class="cs">下面每一条都可能让回本期变动 1—3 个月，签约前建议逐条落实。</div>
+    <ul class="list" id="gaps"></ul>
+  </div>
+
+</div>
+
+<footer>
+  <span>测算模型 M1 ｜ 与《螺蛳粉品牌调研报告》v3.1 同源 ｜ 加盟费/设备/装修单价取自报告 6.1 表</span>
+  <span>仅供决策参考，不构成投资建议</span>
+</footer>
+</div>
+
+<script>
+const BRANDS = [
+ {name:'肥姨妈', color:'#c2412f', fee:2.98, dep:0.5,  equip:3.5, stock:4.0,  pos:0.15, fitout:750, mgmtPct:0.05, mgmtFix:0,    food:0.36, bs:9.5, ps:9.0, bn:'1,591 家/31 省、市级非遗传承人、明星代言', pn:'15—27 元价格带、免费续粉、小吃线完整，客单 21.5 元最高'},
+ {name:'小蛮螺', color:'#d4862a', fee:3.8,  dep:0.1,  equip:3.0, stock:0.45, pos:0.2,  fitout:600, mgmtPct:0,    mgmtFix:250,  food:0.38, bs:7.0, ps:7.2, bn:'585 家/267 城，2020 年备案', pn:'风味多、3 分钟出餐、档口与小店模型成熟'},
+ {name:'螺鼎记', color:'#7b5ca6', fee:2.98, dep:0.4,  equip:3.8, stock:0.5,  pos:0.35, fitout:600, mgmtPct:0,    mgmtFix:300,  food:0.40, bs:4.2, ps:4.3, bn:'未入红餐百店榜，备案仅登记 2 家加盟店', pn:'10—14 元低价带、依赖高校客流、SKU 偏少'},
+ {name:'大铁牛', color:'#2c8579', fee:3.98, dep:0.5,  equip:3.0, stock:1.5,  pos:0.25, fitout:500, mgmtPct:0.04, mgmtFix:0,    food:0.38, bs:8.5, ps:8.2, bn:'2,481 家/263 城，2025 年至今新开 1,453 家', pn:'卤味/火锅加料、外卖强，客单 16.5 元'},
+ {name:'朱小小', color:'#3b6fa0', fee:3.0,  dep:1.0,  equip:4.0, stock:1.5,  pos:0.5,  fitout:800, mgmtPct:0,    mgmtFix:375,  food:0.39, bs:7.6, ps:8.4, bn:'累计 850+、在营 640+，成都起家', pn:'60+ SKU、19 元正价、团购 12.8 元拉新强'},
+ {name:'柳螺香', color:'#55627a', fee:5.0,  dep:1.0,  equip:6.0, stock:1.5,  pos:1.0,  fitout:600, mgmtPct:0,    mgmtFix:500,  food:0.40, bs:5.8, ps:4.9, bn:'官方 1,700/30 省，但第三方口径仅 402 家', pn:'客单 13.7 元偏低、团购低至 7.9 元，单碗利润薄'},
+ {name:'杂牌', color:'#8b6f47', fee:0, dep:0, equip:1.0, stock:1.0, pos:0.2, fitout:500, mgmtPct:0, mgmtFix:0, food:0.36, bs:2.4, ps:5.5, bn:'无品牌资产、无背书、无总部支持', pn:'口味可复制、可用低价，但无研发与稳定供应链'}
+];
+const AREA = 100, OPEN_FEE = 15000, WORK_CAP = 20000, DEP_MONTHS = 4, PACK = 0.015, MKT = 0.02;
+const LABOR_LOAD = 0.12, OTHER_RATE = 0.025, TAX_RATE = 0.005;
+const FTE = [[2000,4],[3000,4],[6000,6],[8000,8],[10000,9],[12000,10],[14000,11],[16000,12]];
+
+function fte(d){
+  if(d<=3000) return 4;
+  if(d>=16000) return 12;
+  for(let i=1;i<FTE.length;i++){
+    const [x0,y0]=FTE[i-1],[x1,y1]=FTE[i];
+    if(d<=x1) return y0+(y1-y0)*(d-x0)/(x1-x0);
+  }
+  return 12;
+}
+
+function calc(b, s){
+  const rev = s.daily*30;
+  const labor = fte(s.daily)*s.wage*30*(1+LABOR_LOAD);
+  const food = rev*b.food;
+  const platform = rev*s.delivery*(s.commission+PACK);
+  const mkt = rev*MKT;
+  const mgmt = rev*b.mgmtPct + b.mgmtFix;
+  const util = Math.max(rev*0.025, 1500);
+  const dep = (b.fitout*AREA + b.equip*10000)/60 + b.fee*10000/36;
+  const rent = s.rent;
+  const other = rev*(OTHER_RATE+TAX_RATE);
+  const net = rev - food - platform - mkt - mgmt - util - labor - rent - dep - other;
+  const total = (b.fee+b.dep+b.equip+b.stock+b.pos)*10000 + b.fitout*AREA + s.rent*DEP_MONTHS + OPEN_FEE + WORK_CAP;
+  const S = 0.55*b.bs + 0.45*b.ps;
+  const C = 2000 + 640*S;
+  const p = 0.12 + 0.88/(1+Math.exp((s.daily - C)/(0.2*C)));
+  return {rev, food, labor, rent, platform, mgmt, util, mkt, dep, other, net, total,
+          margin: net/rev, payback: net>0 ? total/net : Infinity, fte:fte(s.daily), S, C, p};
+}
+
+function beInfo(b, s){
+  const varRate = b.food + s.delivery*(s.commission+PACK) + MKT + b.mgmtPct + 0.025 + (OTHER_RATE+TAX_RATE);
+  let d = 2800, f = 4, labor = 4*s.wage*30*(1+LABOR_LOAD), fixed = 0;
+  for(let i=0;i<5;i++){
+    f = fte(d);
+    labor = f*s.wage*30*(1+LABOR_LOAD);
+    fixed = s.rent + labor + (b.fitout*AREA + b.equip*10000)/60 + b.fee*10000/36 + b.mgmtFix;
+    d = fixed/(1-varRate)/30;
+  }
+  return {be:d, fixed, varRate, labor, fte:f};
+}
+function breakEven(b, s){ return beInfo(b,s).be; }
+
+const DEFAULTS = {daily:6000, rent:12000, wage:150, delivery:0.40, commission:0.22};
+let S = {...DEFAULTS};
+
+const fmt = n => n.toLocaleString('zh-CN',{maximumFractionDigits:0});
+const money = n => (n/10000).toFixed(1)+' 万';
+const yuan = n => (n<0?'-':'')+'¥'+fmt(Math.abs(n));
+const pct = n => (n*100).toFixed(1)+'%';
+
+function render(){
+  document.getElementById('oDaily').textContent = fmt(S.daily)+' 元';
+  document.getElementById('oRent').textContent = fmt(S.rent)+' 元';
+  document.getElementById('oWage').textContent = S.wage+' 元';
+  document.getElementById('oDel').textContent = Math.round(S.delivery*100)+'%';
+  document.getElementById('oCom').textContent = Math.round(S.commission*100)+'%';
+
+  const rows = BRANDS.map(b=>{ const r=calc(b,S); const be=breakEven(b,S); return {b,r,be}; });
+  window.__RESULT = rows.map(o=>({name:o.b.name,total:o.r.total,net:o.r.net,margin:o.r.margin,payback:o.r.payback,be:o.be,rev:o.r.rev,fte:o.r.fte,p:o.r.p,S:o.r.S,C:o.r.C}));
+
+  const paying = rows.filter(o=>o.r.net>0);
+  const rentRatio = S.rent/(S.daily*30);
+  document.getElementById('warn').innerHTML = rentRatio<0.05 ? `<div style="margin:10px 0 2px;padding:9px 12px;border-radius:9px;background:#fdf3ee;border:1px solid #f0d7cb;font-size:11.5px;color:#8a3a26">
+    ⚠ 租金只占营收的 ${(rentRatio*100).toFixed(1)}%。日营收 ${fmt(S.daily)} 元的铺面，租金通常要 2.5—3.5 万/月，这个组合不成立；把“月租金”滑块上调后再看回本期，否则数字偏乐观。</div>` : '';
+  const avgPay = paying.length ? paying.reduce((a,o)=>a+Math.min(o.r.payback,120),0)/paying.length : Infinity;
+  const best = rows.reduce((a,o)=> o.r.net>0 && o.r.payback<a.r.payback ? o : a, rows[0]);
+  const worst = ([...rows].filter(o=>o.r.net>0).sort((a,b)=>b.r.payback-a.r.payback)[0]) || rows[0];
+  const beMin = Math.min(...rows.map(o=>o.be)), beMax = Math.max(...rows.map(o=>o.be));
+
+  document.getElementById('kpis').innerHTML = `
+    <div class="kpi"><div class="v">${fmt(S.daily)}<em>元/日</em></div><div class="l">当前情景日营收</div><div class="d">月营收 ${money(rows[0].r.rev)}</div></div>
+    <div class="kpi"><div class="v">${isFinite(avgPay)?avgPay.toFixed(1)+'<em>个月</em>':'—'}</div><div class="l">平均回本期</div><div class="d">${paying.length}/${rows.length} 个选项在赚钱</div></div>
+    <div class="kpi"><div class="v">${best.b.name}</div><div class="l">回本最快</div><div class="d">${isFinite(best.r.payback)?best.r.payback.toFixed(1)+' 个月':'—'}</div></div>
+    <div class="kpi"><div class="v" style="font-size:19.5px">${beMin===beMax?fmt(beMin):fmt(beMin)+'–'+fmt(beMax)}<em>元</em></div><div class="l">盈亏平衡日营收</div><div class="d">${rows.length} 个选项区间</div></div>
+    <div class="kpi"><div class="v">${rows[0].r.net>0?money(rows.reduce((a,o)=>a+o.r.net,0)/rows.length):'—'}</div><div class="l">平均月净利</div><div class="d">当前假设下</div></div>`;
+
+  // 表（每个数字都带算式提示）
+  const w1 = n => (n/10000).toFixed(2);
+  const tipAttr = s => ` data-tip="${s.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"`;
+  let html = `<thead><tr><th>品牌</th><th>总投入</th><th>月品牌费</th><th>品牌形象</th><th>产品力</th><th>可实现概率</th><th>月净利</th><th>净利率</th><th>回本期</th><th>平衡点/日</th><th>人工/月</th><th>年化 ROI</th></tr></thead><tbody>`;
+  rows.forEach(o=>{
+    const b=o.b, r=o.r, be=beInfo(o.b,S);
+    const pb = r.net>0 ? (r.payback<=60? r.payback.toFixed(1)+' 个月' : '>60 个月') : '不回本';
+    const brandCost=(b.fee+b.dep+b.equip+b.stock+b.pos);
+    const tTotal = `总投入 = 品牌端 ${w1(brandCost*10000)} 万（加盟 ${b.fee}＋保证金 ${b.dep}＋设备 ${b.equip}＋物料 ${b.stock}＋收银 ${b.pos}）｜装修 ${w1(b.fitout*AREA)} 万（${b.fitout} 元/㎡×${AREA}㎡）｜押金 ${w1(S.rent*DEP_MONTHS)} 万（月租 ${fmt(S.rent)}×${DEP_MONTHS} 个月）｜开办 ${w1(OPEN_FEE)} 万｜周转 ${w1(WORK_CAP)} 万\n合计 ${fmt(r.total)} 元`;
+    const tNet = `月营收 ${fmt(r.rev)}（${fmt(S.daily)} 元/日×30 天）
+− 食材 ${fmt(r.food)}（${(b.food*100).toFixed(0)}%）
+− 人工 ${fmt(r.labor)}（${r.fte.toFixed(1)} 人×${S.wage} 元×30 天×1.12 附加）
+− 房租 ${fmt(r.rent)}
+− 外卖平台 ${fmt(r.platform)}（${Math.round(S.delivery*100)}%×(${Math.round(S.commission*100)}%+1.5%)）
+− 营销 ${fmt(r.mkt)}（2%）
+− 品牌费 ${fmt(r.mgmt)}（${b.mgmtPct? (b.mgmtPct*100)+'% 营业额':b.mgmtFix+' 元/月固定'}）
+− 水电 ${fmt(r.util)}（2.5%，下限 1,500）
+− 折旧 ${fmt(r.dep)}（装修+设备÷60＋加盟费÷36）
+− 杂费税费 ${fmt(r.other)}（3%）
+= 月净利 ${fmt(r.net)} 元`;
+    const tMargin = `净利率 = 月净利 ${fmt(r.net)} ÷ 月营收 ${fmt(r.rev)} = ${(r.margin*100).toFixed(1)}%`;
+    const tPay = r.net>0
+      ? `回本期 = 总投入 ${fmt(r.total)} ÷ 月净利 ${fmt(r.net)} = ${r.payback.toFixed(1)} 个月\n未计转让费、装修期空租与开业爬坡期`
+      : `月净利为负，总投入无法通过经营收回`;
+    const tBE = `盈亏平衡（日营收）= 固定成本 ${fmt(be.fixed)} ÷ (1−变动成本率 ${(be.varRate*100).toFixed(1)}%) ÷ 30 天 = ${fmt(be.be)} 元/日
+固定成本 = 房租 ${fmt(S.rent)}＋人工 ${fmt(be.labor)}（${be.fte.toFixed(1)} 人）＋折旧 ${fmt((b.fitout*AREA+b.equip*10000)/60+b.fee*10000/36)}＋管理费 ${fmt(b.mgmtFix)}
+变动成本率 = 食材 ${(b.food*100).toFixed(0)}%＋外卖 ${(S.delivery*(S.commission+PACK)*100).toFixed(1)}%＋营销 2%＋水电 2.5%＋杂费税费 3%＋品牌费 ${b.mgmtPct?(b.mgmtPct*100)+'%':'0'}`;
+    const tLabor = `人工 = ${r.fte.toFixed(1)} 人 × ${S.wage} 元/日 × 30 天 × (1＋12% 吃住社保附加) = ${fmt(r.labor)} 元/月\n人数按你给的分档插值：日营收 ${fmt(S.daily)} 元 → ${r.fte.toFixed(1)} 人`;
+    const tRoi = `年化 ROI = 月净利 ${fmt(r.net)} × 12 ÷ 总投入 ${fmt(r.total)} = ${(r.net*12/r.total*100).toFixed(0)}%`;
+    const tMgmt = b.mgmtPct
+      ? `品牌费 = 月营收 ${fmt(r.rev)} × ${(b.mgmtPct*100)}% = ${fmt(r.mgmt)} 元/月\n按营业额抽成，营收越高交得越多（不是固定费用）`
+      : (b.mgmtFix
+        ? `品牌费 = ${(b.mgmtFix*12/10000).toFixed(2)} 万/年 ÷ 12 = ${fmt(b.mgmtFix)} 元/月（固定，不随营收变动）`
+        : `杂牌无品牌方：加盟费、保证金、管理费、营业额抽成全部为 0 → 0 元/月`);
+    const tBrand = `品牌形象 ${b.bs.toFixed(1)} / 10：${b.bn}\n看的是认知度与背书：门店规模、覆盖省份、备案与合规、是否有代言/非遗/资本背书。`;
+    const tProd = `产品力 ${b.ps.toFixed(1)} / 10：${b.pn}\n看的是菜单宽度、客单价、复购与出餐效率、供应链稳定性。`;
+    const tProb = `可实现概率 ${(r.p*100).toFixed(0)}% ＝ 12% ＋ 88% ÷ (1 + e^((目标 ${fmt(S.daily)} − 能力上限 ${fmt(Math.round(r.C))}) ÷ ${fmt(Math.round(0.2*r.C))}))
+综合分 ${r.S.toFixed(2)} ＝ 0.55×品牌形象 ${b.bs} ＋ 0.45×产品力 ${b.ps}
+能力上限 C ＝ 2,000 ＋ 640×${r.S.toFixed(2)} ＝ ${fmt(Math.round(r.C))} 元/日
+目标低于上限越多，概率越高；12% 是尾部保底（极佳选址/超低价仍可能做到）。这是主观评分模型，不是统计预测。`;
+
+    const pCls = r.p>=0.65 ? 'pos' : (r.p>=0.4 ? 'mid' : 'neg');
+    html += `<tr>
+      <td><span class="sw" style="background:${b.color}"></span>${b.name}</td>
+      <td class="num"${tipAttr(tTotal)}>${money(r.total)}</td>
+      <td class="num ${r.mgmt>0?'neg':''}"${tipAttr(tMgmt)}>${r.mgmt>0?'−':''}${fmt(r.mgmt)}</td>
+      <td class="num"${tipAttr(tBrand)}>${b.bs.toFixed(1)}</td>
+      <td class="num"${tipAttr(tProd)}>${b.ps.toFixed(1)}</td>
+      <td class="num ${pCls}"${tipAttr(tProb)}>${(r.p*100).toFixed(0)}%</td>
+      <td class="num ${r.net>0?'pos':'neg'}"${tipAttr(tNet)}>${r.net>0?'+':''}${fmt(r.net)}</td>
+      <td class="num ${r.net>0?'pos':'neg'}"${tipAttr(tMargin)}>${pct(r.margin)}</td>
+      <td class="num ${r.net>0?'pos':'neg'}"${tipAttr(tPay)}>${pb}</td>
+      <td class="num"${tipAttr(tBE)}>${fmt(be.be)}</td>
+      <td class="num"${tipAttr(tLabor)}>${fmt(r.labor)}</td>
+      <td class="num ${r.net>0?'pos':'neg'}"${tipAttr(tRoi)}>${(r.net*12/r.total*100).toFixed(0)}%</td>
+    </tr>`;
+  });
+  html += '</tbody>';
+  document.getElementById('tbl').innerHTML = html;
+
+  drawPayback(rows);
+  drawMargin(rows);
+  drawBE(rows);
+  drawInvest(rows);
+  drawCost(rows);
+
+  const fastest = paying.sort((a,b)=>a.r.payback-b.r.payback)[0];  const fy=rows.find(o=>o.b.name==='肥姨妈'), dt=rows.find(o=>o.b.name==='大铁牛');
+  document.getElementById('tPay').innerHTML = `同样 ${fmt(S.daily)} 元/天，最快的是 <b>${fastest?fastest.b.name:'—'}</b>${fastest?`（${fastest.r.payback.toFixed(1)} 个月）`:''}，最慢的是 <b>${worst.b.name}</b>（${worst.r.net>0?worst.r.payback.toFixed(1)+' 个月':'仍在亏钱'}）。差距一半来自投入规模（${money(Math.min(...rows.map(o=>o.r.total)))} 对 ${money(Math.max(...rows.map(o=>o.r.total)))}），一半来自营业额抽成——肥姨妈 ${(fy.b.mgmtPct*100)}%、大铁牛 ${(dt.b.mgmtPct*100)}%，当前营收下每月先被拿走 ${fmt(fy.r.mgmt)} 与 ${fmt(dt.r.mgmt)} 元。`;
+}
+
+/* ---------- SVG 助手 ---------- */
+const NS='http://www.w3.org/2000/svg';
+function svgEl(w,h){ return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">`; }
+function txt(x,y,s,o={}){ return `<text x="${x}" y="${y}" font-size="${o.fs||11}" fill="${o.fill||'#6b7485'}" text-anchor="${o.anchor||'start'}" font-weight="${o.fw||400}" font-family="-apple-system,Segoe UI,PingFang SC,Microsoft YaHei,sans-serif">${s}</text>`; }
+
+/* ---------- 1. 回本期：桌面分组柱 / 手机单场景条形 ---------- */
+function drawPayback(rows){
+  if(window.innerWidth<=640){
+    const W=372, rh=34, mt=12, H=mt+rows.length*rh+22;
+    const x0=64, x1=360, pw=x1-x0;
+    const pbs=rows.map(o=>{ const r=calc(o.b,S); return r.net>0? r.total/r.net : Infinity; });
+    const fin=pbs.filter(isFinite);
+    const maxM=Math.min(60,Math.max(6,Math.ceil(Math.max(...fin)*1.15)));
+    const x=m=>x0+Math.min(m,maxM)/maxM*pw;
+    let s=svgEl(W,H);
+    for(let t=0;t<=2;t++){
+      const mv=maxM*t/2;
+      s+=`<line x1="${x(mv)}" y1="${mt-2}" x2="${x(mv)}" y2="${H-16}" stroke="${t===0?'#e3e8ef':'#f0f3f7'}"/>`;
+      s+=txt(x(mv),H-4,t===0?'0':Math.round(mv)+' 月',{anchor:t===0?'start':'end',fs:9.5,fill:'#98a0ae'});
+    }
+    rows.forEach((o,i)=>{
+      const pb=pbs[i], capped=!isFinite(pb)||pb>60;
+      const yy=mt+i*rh+7, len=capped?pw:Math.max(3,x(pb)-x0);
+      s+=txt(4,yy+12.5,o.b.name,{fs:10.5,fill:'#2c3648',fw:700});
+      s+=`<rect x="${x0}" y="${yy}" width="${len}" height="15" fill="${o.b.color}" opacity="${capped?0.18:0.92}" rx="4"/>`;
+      const lab=capped?'不回本':pb.toFixed(1)+' 月';
+      const tw=lab.length*6.2;
+      if(!capped && x0+len+tw+8<x1) s+=txt(x0+len+6,yy+11.5,lab,{fs:10,fill:'#4a5468',fw:600});
+      else s+=txt(x0+len-6,yy+11.5,lab,{anchor:'end',fs:10,fill:capped?'#8a93a1':'#fff',fw:600});
+    });
+    s+=`</svg>`;
+    document.getElementById('cPay').innerHTML=s;
+    return;
+  }
+  const W=920,H=320,ml=48,mr=16,mt=18,mb=52;
+  const SCEN=[3000,6000,10000], OPA=[0.28,0.62,1];
+  const y=m=>H-mb-Math.min(m,60)/60*(H-mt-mb);
+  let s=svgEl(W,H);
+  const gw=(W-ml-mr)/rows.length;
+  for(let m=0;m<=60;m+=12){
+    s+=`<line x1="${ml}" y1="${y(m)}" x2="${W-mr}" y2="${y(m)}" stroke="${m===0?'#d9dee6':'#eff2f6'}"/>`;
+    s+=txt(ml-8,y(m)+4,m===60?'60+':m,{anchor:'end',fs:10.5});
+  }
+  const bw=24, gap=7, total=bw*3+gap*2;
+  rows.forEach((o,i)=>{
+    const gx=ml+gw*i+(gw-total)/2;
+    SCEN.forEach((d,j)=>{
+      const r=calc(o.b,{...S,daily:d});
+      const pb=r.net>0?r.total/r.net:Infinity;
+      const capped=!isFinite(pb)||pb>60;
+      const h=Math.max(2,(H-mb)-y(Math.min(pb,60)));
+      const x=gx+j*(bw+gap);
+      s+=`<rect x="${x}" y="${H-mb-h}" width="${bw}" height="${h}" fill="${o.b.color}" opacity="${capped?0.16:OPA[j]}" rx="2"/>`;
+      const label=capped?'不回':(pb<=9.9?pb.toFixed(1):Math.round(pb)+'');
+      s+=txt(x+bw/2,H-mb-h-5,label,{anchor:'middle',fs:9.5,fill:capped?'#98a0ae':'#2c3648',fw:600});
+    });
+    s+=txt(gx+total/2,H-mb+16,o.b.name,{anchor:'middle',fs:11,fill:'#2c3648',fw:700});
+    const pb6=calc(o.b,{...S,daily:6000});
+    s+=txt(gx+total/2,H-mb+30,pb6.net>0?pb6.payback.toFixed(1)+' 月':'不回本',{anchor:'middle',fs:9.5,fill:pb6.net>0?'#6b7485':'#c2412f'});
+  });
+  // 图例
+  SCEN.forEach((d,j)=>{
+    const lx=ml+j*120;
+    s+=`<rect x="${lx}" y="${H-14}" width="9" height="9" fill="#3b6fa0" opacity="${OPA[j]}" rx="1.5"/>`;
+    s+=txt(lx+14,H-6,fmt(d)+' 元/日',{fs:9.5,fill:'#6b7485'});
+  });
+  s+=`</svg>`;
+  document.getElementById('cPay').innerHTML=s;
+}
+
+/* ---------- 2. 净利率 ---------- */
+function drawMargin(rows){
+  const W=460,H=300,ml=42,mr=14,mt=14,mb=32;
+  const x=d=>ml+(d-2000)/14000*(W-ml-mr);
+  const y=v=>mt+(0.35-v)/0.50*(H-mt-mb);
+  let s=svgEl(W,H);
+  for(let v=0.3;v>=-0.15;v-=0.1){
+    s+=`<line x1="${ml}" y1="${y(v)}" x2="${W-mr}" y2="${y(v)}" stroke="${v===0?'#cfd6e0':'#eff2f6'}"/>`;
+    s+=txt(ml-6,y(v)+4,Math.round(v*100)+'%',{anchor:'end',fs:9.5});
+  }
+  for(let d=2000;d<=16000;d+=2000){
+    s+=txt(x(d),H-mb+15,fmt(d),{anchor:'middle',fs:9.5});
+  }
+  rows.forEach(o=>{
+    let path='';
+    for(let d=2000;d<=16000;d+=100){
+      const r=calc(o.b,{...S,daily:d});
+      path+=(d===2000?'M':'L')+x(d).toFixed(1)+','+y(Math.max(-0.15,Math.min(0.35,r.margin))).toFixed(1);
+    }
+    s+=`<path d="${path}" fill="none" stroke="${o.b.color}" stroke-width="1.9" opacity=".9"/>`;
+  });
+  s+=`</svg>`;
+  document.getElementById('cMar').innerHTML=s;
+}
+
+/* ---------- 3. 盈亏平衡点 ---------- */
+function drawBE(rows){
+  const W=460,H=250,ml=84,mr=26,mt=10,mb=28;
+  const x=d=>ml+Math.max(0,Math.min(4000,d))/4000*(W-ml-mr);
+  const sorted=[...rows].sort((a,b)=>a.be-b.be);
+  let s=svgEl(W,H);
+  const rh=(H-mt-mb)/sorted.length;
+  for(let v=1000;v<=4000;v+=1000){
+    s+=`<line x1="${x(v)}" y1="${mt}" x2="${x(v)}" y2="${H-mb}" stroke="#f1f3f7"/>`;
+  }
+  [3000].forEach(v=>{
+    s+=`<line x1="${x(v)}" y1="${mt}" x2="${x(v)}" y2="${H-mb}" stroke="#b9c2cf" stroke-dasharray="4 3"/>`;
+    s+=txt(x(v),H-8,'3,000 参照',{anchor:'middle',fs:9,fill:'#98a0ae'});
+  });
+  sorted.forEach((o,i)=>{
+    const yy=mt+rh*i+rh/2;
+    const w=Math.max(0,x(o.be)-ml);
+    s+=txt(ml-8,yy+4,o.b.name,{anchor:'end',fs:9.5,fill:'#2c3648'});
+    s+=`<rect x="${ml}" y="${yy-6}" width="${w}" height="11" rx="5" fill="${o.b.color}" opacity=".85"/>`;
+    const label=fmt(Math.round(o.be/10)*10);
+    if(w>64){
+      s+=txt(ml+w-8,yy+4,label,{anchor:'end',fs:9.5,fill:'#fff',fw:700});
+    }else{
+      s+=txt(ml+w+8,yy+4,label,{fs:9.5,fill:'#6b7485'});
+    }
+  });
+  s+=`</svg>`;
+  document.getElementById('cBe').innerHTML=s;
+}
+
+/* ---------- 4. 投入结构 ---------- */
+function drawInvest(rows){
+  const W=460,H=270,ml=56,mr=52,mt=8,mb=26;
+  const x=v=>ml+v/300000*(W-ml-mr);  // 0—30 万
+  let s=svgEl(W,H);
+  [0,10,20,30].forEach(v=>{
+    s+=`<line x1="${x(v*10000)}" y1="${mt}" x2="${x(v*10000)}" y2="${H-mb}" stroke="#eff2f6"/>`;
+    s+=txt(x(v*10000),H-10,v+' 万',{anchor:'middle',fs:9,fill:'#98a0ae'});
+  });
+  const rh=(H-mt-mb)/rows.length;
+  rows.forEach((o,i)=>{
+    const brandCost=(o.b.fee+o.b.dep+o.b.equip+o.b.stock+o.b.pos)*10000;
+    const fit=o.b.fitout*AREA, dep=S.rent*DEP_MONTHS, other=OPEN_FEE+WORK_CAP;
+    const yy=mt+rh*i+rh/2-6;
+    s+=txt(ml-8,yy+10,o.b.name,{anchor:'end',fs:10.5,fill:'#2c3648'});
+    let cur=0;
+    [[brandCost,'#3b6fa0'],[fit,'#d4862a'],[dep,'#7b5ca6'],[other,'#9aa3b0']].forEach(([v,c])=>{
+      const w=(v/300000)*(W-ml-mr);
+      s+=`<rect x="${ml+cur}" y="${yy}" width="${w}" height="14" fill="${c}"/>`;
+      cur+=w;
+    });
+    s+=txt(ml+cur+6,yy+11,(cur/(W-ml-mr)*30).toFixed(1)+' 万',{fs:10,fill:'#6b7485',fw:600});
+  });
+  // 图例
+  const lx=ml, ly=H-2;
+  s+=txt(W-8,mt+12,'',{});
+  s+=`</svg>`;
+  document.getElementById('cInv').innerHTML=s+`<div style="display:flex;gap:14px;flex-wrap:wrap;font-size:10.5px;color:#6b7485;margin-top:6px">
+    <span><i style="display:inline-block;width:9px;height:9px;background:#3b6fa0;margin-right:4px"></i>品牌端（加盟/保证金/设备/物料/收银）</span>
+    <span><i style="display:inline-block;width:9px;height:9px;background:#d4862a;margin-right:4px"></i>装修</span>
+    <span><i style="display:inline-block;width:9px;height:9px;background:#7b5ca6;margin-right:4px"></i>押金（可退）</span>
+    <span><i style="display:inline-block;width:9px;height:9px;background:#9aa3b0;margin-right:4px"></i>开办＋周转</span></div>`;
+  void lx; void ly;
+}
+
+/* ---------- 5. 成本结构 ---------- */
+function drawCost(rows){
+  const W=460,H=280,ml=56,mr=10,mt=6,mb=56;
+  const barW=W-ml-mr;
+  const keys=[['food','#c2412f','食材'],['labor','#d4862a','人工含附加'],['rent','#7b5ca6','房租'],
+              ['platform','#3b6fa0','外卖平台'],['mgmt','#2c8579','品牌费'],['util','#6a86a8','水电'],
+              ['mkt','#9aa3b0','营销'],['dep','#c9ced8','折旧'],['other','#e2e6ec','杂费税费']];
+  const rh=(H-mt-mb)/rows.length;
+  let s=svgEl(W,H);
+  rows.forEach((o,i)=>{
+    const yy=mt+rh*i;
+    let cur=0;
+    const netPct=Math.max(0,o.r.net/o.r.rev);
+    keys.forEach(([k,c])=>{
+      const v=o.r[k]/o.r.rev, w=v*barW;
+      s+=`<rect x="${ml+cur}" y="${yy}" width="${w}" height="${rh-14}" fill="${c}"/>`;
+      cur+=w;
+    });
+    if(netPct>0){
+      s+=`<rect x="${ml+cur}" y="${yy}" width="${netPct*barW}" height="${rh-14}" fill="#fff" stroke="#1b2231" stroke-width="1"/>`;
+    }
+    s+=txt(ml-6,yy+(rh-14)/2+4,o.b.name,{anchor:'end',fs:10,fill:'#2c3648'});
+    s+=txt(W-mr,yy+(rh-14)/2+4,(netPct*100).toFixed(0)+'%',{anchor:'end',fs:9.5,fill:netPct>0.15?'#2c8579':'#6b7485',fw:600});
+  });
+  s+=txt(ml,H-26,'■ 白格 = 净利润（右侧数字）　左侧为营收被各项成本切走的部分',{fs:9.5,fill:'#98a0ae'});
+  s+=`</svg>`;
+  document.getElementById('cCost').innerHTML=s+`<div style="display:flex;gap:12px;flex-wrap:wrap;font-size:10px;color:#6b7485;margin-top:2px">
+    ${keys.map(([k,c,n])=>`<span><i style="display:inline-block;width:8px;height:8px;background:${c};margin-right:4px"></i>${n}</span>`).join('')}</div>`;
+}
+
+/* ---------- 缺口清单 ---------- */
+const GAPS = [
+ ['<b>杂牌的真实代价</b>','上表假设杂牌能做到与品牌店同样的日营收，这恰恰是它最难的地方：没有品牌背书与外卖流量，同位置营收常低 20%—40%；料包自采、食品安全、员工培训、督导全靠自己。省下的 6—13 万投入，本质是拿“品牌溢价”换的。'],
+ ['<b>转让费 / 顶手费</b>','按当地铺位实际报价填，常见 2—8 万；这笔钱不进模型但不掏就开不了门，直接把回本期拉长 1—3 个月。'],
+ ['<b>押金与租金递增</b>','现按押三付一、租金不变测算。若押金只押二付一，投入少 1.2 万；若合同写每年递增 3%—5%，第三年利润会被再切一刀。'],
+ ['<b>外卖真实占比与佣金</b>','默认 40% 外卖、22% 佣金。螺蛳粉是外卖强品类，若实际到 50% 且佣金叠满减后 28%，净利率会再掉 3—5 个点。'],
+ ['<b>客单价与日均单量</b>','50 座 × 翻台才是营收的上限验证。日营收 6,000 意味着约 350 碗/天（客单 17 元），需要至少 7 轮翻台；6,000 以上要先确认商圈客流能否支撑。'],
+ ['<b>人工的真实口径</b>','日薪 150 是裸工资。是否含吃住、社保、节假日双倍、店长提成？若按 12% 附加成本算，月人工要再加 2,000—3,000。'],
+ ['<b>装修标准与消防/明厨亮灶</b>','100㎡ 装修按 500—800 元/㎡ 估。若商场店要求消防改造、明厨亮灶公示屏，还要加 1.5—2 万。'],
+ ['<b>设备新旧与产能</b>','大铁牛设备报价 0.8—5 万跨度极大；二手设备能省 1—2 万，但出餐速度和故障率会直接影响翻台。'],
+ ['<b>品牌合同里的长期费用</b>','肥姨妈 5% 营业额抽成 vs 小蛮螺 0.3 万/年，同一笔营收差 10 倍以上。还有料包必须从总部采购的溢价（18%—50%），这部分已含在食材率里但需要合同确认。'],
+ ['<b>税费</b>','模型未计增值税与所得税。小规模纳税人月销 10 万以下免增值税，超过后按 1%—3% 计，6,000 元/日以上要预留。'],
+ ['<b>景德镇本地租金与客流验证</b>','1.2 万/月对 100㎡ 约合 120 元/㎡/月，在本地属偏上水平；同城不同商圈差异可能到 2 倍。建议拿 2—3 个候选铺位的实际报价代入滑块对比。'],
+];
+document.getElementById('gaps').innerHTML = GAPS.map(([t,d])=>`<li>${t}：${d}</li>`).join('');
+
+['sDaily','sRent','sWage','sDel','sCom'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',e=>{
+    const v=Number(e.target.value);
+    if(id==='sDaily') S.daily=v;
+    if(id==='sRent') S.rent=v;
+    if(id==='sWage') S.wage=v;
+    if(id==='sDel') S.delivery=v/100;
+    if(id==='sCom') S.commission=v/100;
+    render();
+  });
+});
+document.getElementById('btnReset').addEventListener('click',()=>{
+  S={...DEFAULTS};
+  document.getElementById('sDaily').value=6000;
+  document.getElementById('sRent').value=12000;
+  document.getElementById('sWage').value=150;
+  document.getElementById('sDel').value=40;
+  document.getElementById('sCom').value=22;
+  render();
+});
+/* ---------- 算式浮层 ---------- */
+const tipEl = document.getElementById('tip') || (()=>{const d=document.createElement('div'); d.id='tip'; document.body.appendChild(d); return d;})();
+let lastX = 0, lastY = 0, tipAbove = false;
+function placeTip(){
+  const pw = tipEl.offsetWidth || 300, ph = tipEl.offsetHeight || 170;
+  let x = tipAbove ? lastX - pw/2 : lastX + 16;
+  let y = tipAbove ? lastY - ph - 14 : lastY + 18;
+  if(x + pw > window.innerWidth - 12) x = tipAbove ? window.innerWidth - pw - 12 : lastX - pw - 16;
+  if(y + ph > window.innerHeight - 12) y = lastY - ph - 16;
+  x = Math.max(8, Math.min(x, window.innerWidth - pw - 8));
+  y = Math.max(8, Math.min(y, window.innerHeight - ph - 8));
+  tipEl.style.left = x + 'px';
+  tipEl.style.top = y + 'px';
+}
+let tipFor = null;
+document.addEventListener('mouseover', e=>{
+  if(window.innerWidth<=640) return;          // 窄屏：悬停不弹，只认点击
+  const t = e.target.closest ? e.target.closest('[data-tip]') : null;
+  if(!t){ tipEl.classList.remove('on'); tipFor=null; return; }
+  tipFor = t; tipAbove = false;
+  lastX = e.clientX; lastY = e.clientY;
+  tipEl.textContent = t.getAttribute('data-tip');
+  tipEl.classList.add('on');
+  requestAnimationFrame(placeTip);
+});
+document.addEventListener('mousemove', e=>{
+  if(window.innerWidth<=640) return;          // 窄屏不跟随鼠标
+  lastX = e.clientX; lastY = e.clientY;
+  if(tipEl.classList.contains('on')) placeTip();
+});
+document.addEventListener('scroll', ()=>{ tipEl.classList.remove('on'); tipFor=null; }, true);
+
+/* 窄屏：点一下弹算式，再点同一个数字收起（滑表格不误触） */
+document.addEventListener('click', e=>{
+  if(window.innerWidth>640) return;
+  const t = e.target.closest ? e.target.closest('[data-tip]') : null;
+  if(!t){ tipEl.classList.remove('on'); tipFor=null; return; }
+  if(tipEl.classList.contains('on') && tipFor===t){ tipEl.classList.remove('on'); tipFor=null; return; }
+  tipFor = t;
+  tipAbove = (window.matchMedia && window.matchMedia('(pointer:coarse)').matches);
+  lastX = e.clientX; lastY = e.clientY;
+  tipEl.textContent = t.getAttribute('data-tip');
+  tipEl.classList.add('on');
+  requestAnimationFrame(placeTip);
+});
+
+render();
+
+/* 横竖屏切换 / 缩放时重绘（回本期图在手机上换一种画法） */
+let rzT=null;
+window.addEventListener('resize', ()=>{ clearTimeout(rzT); rzT=setTimeout(()=>{ tipEl.classList.remove('on'); render(); }, 160); });
+</script>
+<div id="tip"></div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
